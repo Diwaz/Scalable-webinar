@@ -10,8 +10,8 @@ export default function Live() {
     // const [blob,setBlob]=useState<string>('');
     // const [chunks,setChunks]=useState<string[]>([]);
     const [videoUrl,setVideoUrl]= useState<string>('');
-    const mediaRecorderRef = useRef(null)
-    const recordedChunksRef = useRef([])
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+    const recordedChunksRef = useRef<Blob[]>([])
     const videoElementRef = useRef(null)
 
     const constraints:object = {video:{
@@ -50,8 +50,9 @@ export default function Live() {
             mediaRecorderRef.current = new MediaRecorder(stream);
 
             //collect recorder video chunks 
-            mediaRecorderRef.current.ondataavailable =(event:any) =>{
+            mediaRecorderRef.current.ondataavailable =(event:BlobEvent) =>{
                 if(event.data.size > 0){
+                    console.log('chunks generating',event.data)
                     recordedChunksRef.current.push(event.data)
                 }
             }
@@ -69,12 +70,12 @@ export default function Live() {
             }
 
             //start Recording
-            mediaRecorderRef.current.start();
+            mediaRecorderRef.current.start(1000);
 
 
         }
         catch (err){
-            console.log('Error starting screen recording')
+            console.log('Error starting screen recording',err)
         }
         // mediaRecorder.start();
      }
