@@ -53,6 +53,7 @@ export default function Live() {
             mediaRecorderRef.current.ondataavailable =(event:BlobEvent) =>{
                 if(event.data.size > 0){
                     console.log('chunks generating',event.data)
+                    sendChunks(event.data)
                     recordedChunksRef.current.push(event.data)
                 }
             }
@@ -69,7 +70,7 @@ export default function Live() {
                 setVideoUrl(recordedUrl);
             }
 
-            //start Recording
+            //start Recording and in time slic of 1 sec the chunks of videos are ejected out 
             mediaRecorderRef.current.start(1000);
 
 
@@ -93,6 +94,16 @@ export default function Live() {
     const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
     const secs = String(seconds % 60).padStart(2, '0');
     return `${hrs}:${mins}:${secs}`;   
+    }
+
+    const sendChunks = async  (chunk: Blob) =>{
+        const formData = new FormData();
+        formData.append('chunk',chunk);
+
+        await fetch('http://localhost:8080/v1/upload',{
+            method: 'POST',
+            body: formData,
+        })
     }
   return (
     <div>
