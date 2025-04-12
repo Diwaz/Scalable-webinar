@@ -13,6 +13,7 @@ export default function Live() {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null)
     const recordedChunksRef = useRef<Blob[]>([])
     const videoElementRef = useRef(null)
+    const [sessionId,setSessionId]= useState<string>('');
 
     const constraints:object = {video:{
         frameRate:{
@@ -41,6 +42,8 @@ export default function Live() {
     const handleStream = async  () =>{
         console.log('StreamStarted')
         setStartRecording(true)
+        const randomId = Math.random().toString(36).substring(2, 10);
+        setSessionId(randomId)
         try{
             // requesting screen capture
             const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
@@ -99,6 +102,7 @@ export default function Live() {
     const sendChunks = async  (chunk: Blob) =>{
         const formData = new FormData();
         formData.append('chunk',chunk);
+        formData.append('sessionId',sessionId)
 
         await fetch('http://localhost:8080/v1/upload',{
             method: 'POST',
