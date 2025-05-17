@@ -152,7 +152,7 @@ export default function Home() {
       // WebSocket event handlers
       ws.onclose = function() {
         addLogMessage("WebSocket connection closed");
-        alert("WebSocket has closed");
+        // alert("WebSocket has closed");
         cleanupConnections();
       };
       
@@ -232,7 +232,7 @@ export default function Home() {
       setIsSharing(true);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.toString() : 'Unknown error';
-      alert(errorMessage);
+      // alert(errorMessage);
       addLogMessage(`Error: ${errorMessage}`);
       cleanupConnections();
     }
